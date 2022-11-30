@@ -1,14 +1,5 @@
-export const wallets = [
-  {
-    address: "0x1",
-    balance: 100,
-  },
-  {
-    address: "0x2",
-    balance: 50,
-  },
-  {
-    address: "0x3",
-    balance: 25,
-  },
-];
+export const balances = new Map<string, number>([
+  ["0x1", 100],
+  ["0x2", 50],
+  ["0x3", 25],
+]);

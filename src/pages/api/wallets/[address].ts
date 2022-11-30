@@ -6,7 +6,7 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   const {address} = req.query;
-  const wallet = getWallet(address as string);
+  const balance = getWallet(address as string);
 
-  res.status(200).json(wallet);
+  res.status(200).json({balance});
 }
