@@ -8,5 +8,8 @@ export default async function handler(
   const {address} = req.query;
   const balance = getWallet(address as string);
 
-  res.status(200).json({balance});
+  if (balance) {
+    return res.status(200).json({balance});
+  }
+  res.status(200).json({balance: 0});
 }
