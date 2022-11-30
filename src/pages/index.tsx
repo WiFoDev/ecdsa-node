@@ -1,12 +1,11 @@
 import type {NextPage} from "next";
 
+import {Card} from "@/components";
+
 const Home: NextPage = () => {
   return (
     <section>
-      <div className="px-6 py-8 bg-white text-background flex flex-col gap-4 min-w-[28rem] rounded border-2 border-parragraf">
-        <h1 className="text-2xl font-bold text-background">
-          Your Wallet
-        </h1>
+      <Card title="Your Wallet">
         <form className="flex flex-col gap-3">
           <label className="text-xs flex flex-col">
             <span>Wallet Address</span>
@@ -20,7 +19,7 @@ const Home: NextPage = () => {
             BALANCE: 0
           </div>
         </form>
-      </div>
+      </Card>
     </section>
   );
 };
