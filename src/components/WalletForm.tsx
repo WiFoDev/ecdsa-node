@@ -1,5 +1,8 @@
 import React, {useState} from "react";
 import {useQuery} from "@tanstack/react-query";
+import {useAtom} from "jotai";
+
+import {addressAtom} from "@/pages/_app";
 
 import {Input} from "./Input";
 
@@ -13,7 +16,7 @@ const getBalance = async (address: string): Promise<string> => {
 };
 
 export const WalletForm = () => {
-  const [address, setAddress] = useState("");
+  const [address, setAddress] = useAtom(addressAtom);
   const {data} = useQuery(
     ["balance", address],
     () => getBalance(address),
