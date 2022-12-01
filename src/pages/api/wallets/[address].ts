@@ -6,10 +6,12 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   const {address} = req.query;
-  const balance = getWallet(address as string);
 
-  if (balance) {
-    return res.status(200).json({balance});
+  try {
+    const wallet = await getWallet(address as string);
+
+    res.status(200).json(wallet.toPrimitives());
+  } catch (error: any) {
+    res.status(404).json({success: false, message: error.message});
   }
-  res.status(200).json({balance: 0});
 }

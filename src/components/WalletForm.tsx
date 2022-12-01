@@ -5,13 +5,18 @@ import {addressAtom} from "@/pages/_app";
 
 import {Input} from "./Input";
 
-const getBalance = async (address: string): Promise<string> => {
-  const response = await fetch(
-    `http://localhost:3000/api/wallets/${address}`,
-  );
-  const data = await response.json();
+type Wallet = {
+  address: string;
+  balance: number;
+  sucess?: boolean;
+  message?: string;
+};
 
-  return data.balance;
+const getBalance = async (address: string): Promise<Wallet> => {
+  const response = await fetch(`/api/wallets/${address}`);
+  const wallet = await response.json();
+
+  return wallet;
 };
 
 export const WalletForm = () => {
@@ -20,7 +25,7 @@ export const WalletForm = () => {
     ["balance", address],
     () => getBalance(address),
     {
-      enabled: address.length > 2,
+      enabled: address.length === 42,
     },
   );
 
@@ -34,7 +39,7 @@ export const WalletForm = () => {
         onChange={(e) => setAddress(e.target.value)}
       />
       <div className="text-sm p-2 bg-parragraf/50 rounded pointer-events-none">
-        BALANCE: {data ?? "0"}
+        BALANCE: {data ? data.balance : 0} ALC
       </div>
     </form>
   );

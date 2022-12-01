@@ -20,7 +20,7 @@ export const Balances = () => {
 
   return (
     <div className="min-h-[22rem] relative px-2">
-      <div className="border-b-parragraf border-b-2 flex justify-between font-bold">
+      <div className="border-b-parragraf border-b-2 flex justify-between font-bold mb-2">
         <span>Address</span>
         <span>Balance</span>
       </div>

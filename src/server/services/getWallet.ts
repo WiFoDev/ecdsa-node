@@ -1,9 +1,16 @@
-import {balances} from "../db";
+import {getClientAndConnect} from "../db";
+import Wallet from "../Model/Wallets";
 
-export const getWallet = (address: string) => {
-  const balance = balances.get(address);
+export const getWallet = async (address: string) => {
+  const dbClient = await getClientAndConnect("wallets");
+  const document = await dbClient
+    .db()
+    .collection("wallets")
+    .findOne({address});
 
-  if (!balance) return 0;
+  if (!document) throw new Error("Wallet not found");
 
-  return balance;
+  const wallet = Wallet.create(document.address, document.balance);
+
+  return wallet;
 };
