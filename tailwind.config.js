@@ -8,7 +8,7 @@ module.exports = {
         headline: "#fffffe",
         parragraf: "#a7a9be",
         "button-text": "#fffffe",
-        primary: "#ff8906",
+        primary: "#5970f8",
         secondary: "#f25f4c",
         tertiary: "#e53170",
       },
