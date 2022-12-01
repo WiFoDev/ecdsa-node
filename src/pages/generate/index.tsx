@@ -3,13 +3,36 @@ import {NextPage} from "next";
 import {utils, getPublicKey} from "ethereum-cryptography/secp256k1";
 import {toHex} from "ethereum-cryptography/utils";
 import {keccak256} from "ethereum-cryptography/keccak";
+import {useMutation} from "@tanstack/react-query";
+import {DotWave} from "@uiball/loaders";
+import Link from "next/link";
 
-import {Card} from "@/components";
+import {Card, CopyToClipboard} from "@/components";
+
+const postGenerate = async ({address}: {address: string}) => {
+  const response = await fetch("/api/wallets/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({address}),
+  });
+
+  return response.json();
+};
 
 const Generate: NextPage = () => {
   const [publicKey, setPublicKey] = useState<string>();
   const [privateKey, setPrivateKey] = useState<string>();
   const [address, setAddress] = useState<string>();
+  const [showKeys, setShowKeys] = useState<boolean>(false);
+
+  const {mutate, isLoading} = useMutation({
+    mutationFn: postGenerate,
+    onSuccess: () => {
+      setShowKeys(true);
+    },
+  });
 
   const handlerGenerate = () => {
     const privKey = utils.randomPrivateKey();
@@ -19,6 +42,7 @@ const Generate: NextPage = () => {
     setPrivateKey(toHex(privKey));
     setPublicKey(toHex(pubKey));
     setAddress(addressDraft);
+    mutate({address: addressDraft});
   };
 
   return (
@@ -38,24 +62,31 @@ const Generate: NextPage = () => {
           the future.
         </p>
         <button
-          className="bg-primary px-4 py-2 rounded text-white"
+          className="bg-primary px-4 py-2 rounded text-white grid place-items-center"
           onClick={handlerGenerate}
         >
-          Generate
+          {isLoading ? (
+            <DotWave color="white" size={47} speed={1} />
+          ) : (
+            "Generate"
+          )}
         </button>
-        {publicKey && privateKey && address && (
+        {showKeys && (
           <div className="flex flex-col gap-4 mt-4">
-            <div className="flex flex-col gap-2">
-              <span className="font-bold">Private Key</span>
-              <span className="text-background">{privateKey}</span>
-            </div>
-            <div className="flex flex-col gap-2">
-              <span className="font-bold">Public Key</span>
-              <span className="text-background">{publicKey}</span>
-            </div>
-            <div className="flex flex-col gap-2">
-              <span className="font-bold">Address</span>
-              <span className="text-background">{address}</span>
+            <CopyToClipboard
+              text={privateKey as string}
+              title="Private Key"
+            />
+            <CopyToClipboard
+              text={publicKey as string}
+              title="Public Key"
+            />
+            <CopyToClipboard
+              text={address as string}
+              title="Address"
+            />
+            <div className="place-self-center">
+              <Link href="/">Go to Home</Link>
             </div>
           </div>
         )}

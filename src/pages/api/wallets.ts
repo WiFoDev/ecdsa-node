@@ -1,6 +1,6 @@
 import {NextApiHandler} from "next";
 
-import {getWallets} from "@/server/services/getWallets";
+import {getWallets} from "@/server";
 
 const handler: NextApiHandler = async (req, res) => {
   const wallets = await getWallets();
