@@ -3,7 +3,7 @@ import Wallet from "../Model/Wallets";
 
 export const getWallets = async () => {
   const dbClient = await MongoClientFactory.createClient("wallets", {
-    uri: process.env.MONGO_URI as string,
+    uri: process.env.MONGODB_URI as string,
   });
   const collection = dbClient.db().collection("wallets");
 
