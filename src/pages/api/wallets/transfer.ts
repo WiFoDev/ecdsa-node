@@ -6,9 +6,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const {from, to, amount} = req.body;
+  const {signature, message} = req.body;
+  const signatureArray = new Uint8Array(Object.values(signature[0]));
+  const recoveryBit = signature[1] as number;
 
-  transferBalance(from, to, +amount);
+  await transferBalance(signatureArray, recoveryBit, message);
 
-  res.status(200).json({success: true});
+  res.status(200).json({signature, message});
 }

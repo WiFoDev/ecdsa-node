@@ -10,7 +10,16 @@ import {Layout} from "@/Layout";
 
 import "@/styles/globals.css";
 
+type Message = {
+  to: string;
+  amount: string;
+};
+
 export const addressAtom = atom("");
+export const messageAtom = atom<Message>({
+  to: "",
+  amount: "",
+});
 
 function MyApp({Component, pageProps}: AppProps) {
   const client = new QueryClient();

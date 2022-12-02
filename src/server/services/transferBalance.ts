@@ -1,21 +1,67 @@
-import {balances} from "../db";
+import {getClientAndConnect} from "../db";
+import {
+  getAddressFromPublicKey,
+  recoverPublicKeyFromSignature,
+} from "../utils";
 
 import {getWallet} from "./getWallet";
 
-export const transferBalance = (
-  from: string,
-  to: string,
-  amount: number,
-) => {
-  let fromWalletBalance = getWallet(from);
-  let toWalletBalance = getWallet(to);
+export type Message = {
+  to: string;
+  amount: number;
+};
 
-  if (fromWalletBalance < amount) {
+export const transferBalance = async (
+  signatureArray: Uint8Array,
+  recoveryBit: number,
+  message: Message,
+) => {
+  const publickKeySender = recoverPublicKeyFromSignature(
+    signatureArray,
+    recoveryBit,
+    message,
+  );
+  const senderWallet = getAddressFromPublicKey(publickKeySender);
+  const sender = await getWallet(senderWallet);
+  const amount = Number(message.amount);
+
+  if (!sender) {
+    throw new Error("Sender not found");
+  }
+  if (sender.balance < amount) {
     throw new Error("Insufficient funds");
   }
 
-  fromWalletBalance -= amount;
-  toWalletBalance += amount;
-  balances.set(from, fromWalletBalance);
-  balances.set(to, toWalletBalance);
+  const receiver = await getWallet(message.to);
+
+  if (!receiver) {
+    throw new Error("Receiver not found");
+  }
+
+  sender.balance -= amount;
+  receiver.balance += amount;
+
+  const dbClient = await getClientAndConnect("wallets");
+  const collection = dbClient.db().collection("wallets");
+
+  await collection.updateOne(
+    {
+      address: sender.address,
+    },
+    {
+      $set: {
+        balance: sender.balance,
+      },
+    },
+  );
+  await collection.updateOne(
+    {
+      address: receiver.address,
+    },
+    {
+      $set: {
+        balance: receiver.balance,
+      },
+    },
+  );
 };
