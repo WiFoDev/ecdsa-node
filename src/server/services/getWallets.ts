@@ -1,8 +1,10 @@
-import {getClientAndConnect} from "../db";
+import {MongoClientFactory} from "../db";
 import Wallet from "../Model/Wallets";
 
 export const getWallets = async () => {
-  const dbClient = await getClientAndConnect("wallets");
+  const dbClient = await MongoClientFactory.createClient("wallets", {
+    uri: process.env.MONGO_URI as string,
+  });
   const collection = dbClient.db().collection("wallets");
 
   const documents = await collection.find({}, {}).toArray();

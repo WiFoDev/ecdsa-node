@@ -1,10 +1,6 @@
 import React, {FC, useEffect, useState} from "react";
 import {useAtom} from "jotai";
-import {
-  getPublicKey,
-  sign,
-  recoverPublicKey,
-} from "ethereum-cryptography/secp256k1";
+import {getPublicKey, sign} from "ethereum-cryptography/secp256k1";
 import {
   toHex,
   hexToBytes,

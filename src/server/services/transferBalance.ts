@@ -1,4 +1,4 @@
-import {getClientAndConnect} from "../db";
+import {MongoClientFactory} from "../db";
 import {
   getAddressFromPublicKey,
   recoverPublicKeyFromSignature,
@@ -41,7 +41,9 @@ export const transferBalance = async (
   sender.balance -= amount;
   receiver.balance += amount;
 
-  const dbClient = await getClientAndConnect("wallets");
+  const dbClient = await MongoClientFactory.createClient("wallets", {
+    uri: process.env.MONGO_URI as string,
+  });
   const collection = dbClient.db().collection("wallets");
 
   await collection.updateOne(
